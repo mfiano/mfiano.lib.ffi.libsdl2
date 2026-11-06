@@ -78,7 +78,7 @@ A few patterns show up everywhere:
 
   * Example: `(init :video :events)`
   * Example: `(make-window ... :flags '(:shown :resizable))`
-  * Example: `(make-renderer window :flags '(:accelerated :presentvsync))`
+  * Example: `(make-renderer window :flags '(:accelerated :present-vsync))`
 
 * **Wrappers are the public API.** Internally, the bindings are generated with a macro (`define-sdl-function`) and usually have a `%`-prefixed entrypoint. The exported functions are the ergonomic wrappers.
 
@@ -107,7 +107,7 @@ Typical pairs:
 
 * `make-window` / `destroy-window`
 * `make-renderer` / `destroy-renderer`
-* `create-texture` / `destroy-texture`
+* `make-texture` / `destroy-texture`
 * `make-event` / `destroy-event`
 
 For temporary rectangles there are helpers like:
