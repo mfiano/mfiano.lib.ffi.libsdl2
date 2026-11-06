@@ -125,6 +125,7 @@
    #:render-set-scale
    #:render-set-viewport
    #:restore-window
+   #:sdl-error
    #:set-cursor
    #:set-render-draw-blend-mode
    #:set-render-draw-color
