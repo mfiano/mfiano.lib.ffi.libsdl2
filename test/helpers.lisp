@@ -77,9 +77,9 @@
 
 (defun read-pixels (renderer width height)
   (let ((pixels (make-u32-array (* width height))))
-    (c:with-pointer-to-vector-data (pointer pixels)
-      (assert (zerop (%render-read-pixels renderer (c:null-pointer) :rgba8888 pointer
-                                          (* width 4)))))
+    (sdl:with-rect (rect :width width :height height)
+      (c:with-pointer-to-vector-data (pointer pixels)
+        (assert (zerop (%render-read-pixels renderer rect :rgba8888 pointer (* width 4))))))
     pixels))
 
 (defun every-pixel? (pixels value)
