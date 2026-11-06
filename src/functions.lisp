@@ -2,6 +2,7 @@
 
 (c:defcfun ("SDL_GetError" %get-error) :string)
 (c:defcfun ("SDL_ClearError" %clear-error) :void)
+(c:defcfun ("SDL_free" %free) :void (pointer :pointer))
 
 (define-sdl-function %alloc-format ()
   (:name "SDL_AllocFormat"
@@ -100,8 +101,8 @@
 
 (define-sdl-function %get-base-path ()
   (:name "SDL_GetBasePath"
-   :type :string
-   :check #'stringp))
+   :type :pointer
+   :check #'valid-pointer?))
 
 (define-sdl-function %get-cpu-count ()
   (:name "SDL_GetCPUCount"

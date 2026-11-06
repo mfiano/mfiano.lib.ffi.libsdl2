@@ -100,7 +100,9 @@
   (setf (c:foreign-slot-value frect '(:struct frect) 'y) value))
 
 (defun get-base-path ()
-  (%get-base-path))
+  (let ((pointer (%get-base-path)))
+    (unwind-protect (c:foreign-string-to-lisp pointer)
+      (%free pointer))))
 
 (defun get-cpu-count ()
   (%get-cpu-count))
