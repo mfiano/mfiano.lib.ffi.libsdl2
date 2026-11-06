@@ -931,7 +931,8 @@
       (assert (<= (+ x dest-width) width))
       (assert (<= (+ y dest-height) height))
       (c:with-pointer-to-vector-data (pixels data)
-        (%update-texture texture (or rect (c:null-pointer)) (c:inc-pointer pixels offset) pitch)))))
+        (%update-texture texture (or rect (c:null-pointer)) (c:inc-pointer pixels offset) pitch))
+      (values))))
 
 (defun warp-mouse-in-window (x y &key window)
   (check-type x i32)

@@ -4,6 +4,19 @@
   (dolist (name sdl::*functions*)
     (is (c:foreign-symbol-pointer name))))
 
+(test bindings.status.update-texture
+  (with-renderer (window renderer)
+    (with-texture (texture renderer 2 2 :access :static)
+      (signals sdl:sdl-error (sdl::%update-texture texture (c:null-pointer) (c:null-pointer) 8)))))
+
+(test bindings.status.renderer-output-size
+  (with-video ()
+    (c:with-foreign-objects ((width :int) (height :int))
+      (signals sdl:sdl-error (sdl::%get-renderer-output-size (c:null-pointer) width height)))))
+
+(test bindings.status.set-hint
+  (is (eq (sdl::%set-hint "SDL_RENDER_SCALE_QUALITY" "1") t)))
+
 (test error.signal
   (with-video ()
     (signals sdl:sdl-error (sdl:get-window-from-id 0))))
@@ -478,7 +491,7 @@
   (with-renderer (window renderer :width 4 :height 2)
     (with-texture (texture renderer 4 2 :access :static)
       (let ((pixels (make-pixels 4 2)))
-        (sdl:update-texture/from-array texture 4 2 pixels)
+        (is (null (multiple-value-list (sdl:update-texture/from-array texture 4 2 pixels))))
         (sdl:render-copy renderer texture)
         (is (equalp (read-pixels renderer 4 2) pixels))))))
 

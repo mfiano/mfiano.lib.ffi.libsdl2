@@ -181,7 +181,9 @@
   (render-info (:pointer (:struct renderer-info))))
 
 (define-sdl-function %get-renderer-output-size ()
-  (:name "SDL_GetRendererOutputSize")
+  (:name "SDL_GetRendererOutputSize"
+   :type :int
+   :check #'zerop)
   (renderer (:pointer (:struct renderer)))
   (w (:pointer :int))
   (h (:pointer :int)))
@@ -565,7 +567,9 @@
   (cursor (:pointer (:struct cursor))))
 
 (define-sdl-function %set-hint ()
-  (:name "SDL_SetHint")
+  (:name "SDL_SetHint"
+   :type :boolean
+   :check #'identity)
   (name :string)
   (value :string))
 
@@ -695,7 +699,9 @@
   (texture (:pointer (:struct texture))))
 
 (define-sdl-function %update-texture ()
-  (:name "SDL_UpdateTexture")
+  (:name "SDL_UpdateTexture"
+   :type :int
+   :check #'zerop)
   (texture (:pointer (:struct texture)))
   (rect (:pointer (:struct rect)))
   (pixels :pointer)
