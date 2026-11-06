@@ -53,11 +53,14 @@
               (layout (if layout-type (c:foreign-enum-value layout-type layout-key) layout-key)))
           (logior (shl 1 28) (shl type 24) (shl order 20) (shl layout 16) (shl bits 8) bytes))))))
 
+(defvar *functions* nil)
+
 (defmacro define-sdl-function (name () &body (options . field-specs))
   (with-gensyms (result)
     (destructuring-bind (&key ((:name sdl-name)) (type :void) check) options
       (let ((%name (symbolicate '#:% name)))
         `(progn
+           (pushnew ,sdl-name *functions* :test #'string=)
            (c:defcfun (,sdl-name ,%name) ,type ,@field-specs)
            (declaim (inline ,name))
            (defun ,name ,(mapcar #'first field-specs)
