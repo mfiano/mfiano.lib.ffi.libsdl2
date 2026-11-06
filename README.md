@@ -1,22 +1,17 @@
 # mfiano.lib.ffi.libsdl2
 
-CFFI bindings plus thin, Lisp-friendly wrappers for **SDL2 (Simple DirectMedia Layer 2.x)**.
+CFFI bindings for SDL2 (Simple DirectMedia Layer 2.x), with thin Common Lisp wrappers over them.
 
-The design goal is "no drama": keep the API close to SDL, but make it comfortable from Common Lisp: keywords for enums/flags, predictable wrapper names, and errors signaled as Lisp conditions.
+The wrappers keep the shape and naming of SDL's API. They take keywords where SDL takes enums or flags, and they signal `sdl-error` when SDL reports a failure.
 
 ## What's in here
 
 - CFFI bindings for a practical subset of SDL2.
-- Wrapper functions that:
-  - accept keyword flags (often `&rest`),
-  - convert common things to the right C shapes,
-  - and signal `sdl-error` when SDL reports failure.
-
-It's intentionally not a huge framework layer.
+- Wrapper functions, which make up the exported API.
 
 ## Requirements
 
-- **SDL2 runtime** installed on your system.
+- The SDL2 runtime installed on the system.
   - Arch: `pacman -S sdl2`
   - Ubuntu/Debian: `apt install libsdl2-2.0-0`
   - macOS (Homebrew): `brew install sdl2`
@@ -41,9 +36,9 @@ Package:
   (:use #:cl #:mfiano.lib.ffi.libsdl2))
 ```
 
-## Quickstart (window + event loop)
+## Example
 
-This is deliberately "SDL-shaped" code.
+This opens a window and clears it every frame until the window is closed.
 
 ```lisp
 (in-package #:my-demo)
@@ -73,62 +68,51 @@ This is deliberately "SDL-shaped" code.
 
 ## Conventions
 
-A few patterns show up everywhere:
-
-* **Keyword enums/flags.** Where SDL expects a bitmask or enum, the wrappers typically accept keywords.
-
-  * Example: `(init :video :events)`
-  * Example: `(make-window ... :flags '(:shown :resizable))`
-  * Example: `(make-renderer window :flags '(:accelerated :present-vsync))`
-
-* **Wrappers are the public API.** Internally, the bindings are generated with a macro (`define-sdl-function`) and usually have a `%`-prefixed entrypoint. The exported functions are the ergonomic wrappers.
-
-* **Naming is SDL-ish.** Functions keep SDL naming where it's helpful (e.g., `render-clear`, `render-present`, `poll-event`, `wait-event`), but use a consistent Lisp prefix style (`make-window`, `destroy-window`, `get-*`, `set-*`).
+- Where SDL expects a bitmask or enum, the wrappers usually accept keywords:
+  - `(init :video :events)`
+  - `(make-window ... :flags '(:shown :resizable))`
+  - `(make-renderer window :flags '(:accelerated :present-vsync))`
+- The exported wrappers are the public API. The bindings are generated with the `define-sdl-function` macro, and their `%`-prefixed names stay internal.
+- Each wrapper is named after the SDL2 function it calls, in Lisp style: `SDL_RenderClear` is `render-clear` and `SDL_PollEvent` is `poll-event`. Constructors are `make-*` and destructors are `destroy-*`.
 
 ## Error handling
 
-Most SDL failures are converted into a Lisp condition:
-
-* Condition type: `sdl-error`
-* Message: taken from `SDL_GetError`
-
-So you can do the usual:
+Most bindings check SDL's result and signal `sdl-error` on failure. The condition reports the message from `SDL_GetError`.
 
 ```lisp
 (handler-case (init :video)
   (sdl-error (c)
-    (format *error-output* "SDL exploded: ~a~%" c)))
+    (format *error-output* "~a~%" c)))
 ```
 
 ## Memory management
 
-SDL objects created through this library are **foreign pointers**. This library does not try to be clever with GC finalizers: you are expected to call the matching destroy/free function.
-
-Typical pairs:
+SDL objects created through this library are foreign pointers, and the library sets no finalizers on them. Free each one with the matching destroy function:
 
 * `make-window` / `destroy-window`
 * `make-renderer` / `destroy-renderer`
 * `make-texture` / `destroy-texture`
 * `make-event` / `destroy-event`
 
-For temporary rectangles there are helpers like:
+`with-rect` and `with-frect` allocate a temporary rectangle and free it when the body exits.
 
-* `with-rect` and `with-frect` (allocated and freed via `cffi:with-foreign-object`)
+## Coverage
 
-## What SDL2 areas are covered?
+The library covers these areas of SDL2:
 
-This repo focuses mainly on the pieces most games/tools need immediately:
-
-* init/quit, error strings
-* windows + display info
-* renderers + textures
-* events + keyboard/mouse state helpers
+* init/quit and error strings
+* windows and display info
+* renderers and textures
+* OpenGL contexts
+* events, with keyboard and mouse helpers
 * pixel formats
-* a handful of small utilities (timing, hints, clipboard, etc.)
+* timing
+* base and preference paths
+* the CPU count
 
-Surfaces, and the custom cursors made from them, are not supported. SDL requires a surface to be freed before the pixel data it borrows, which this library cannot ensure for a Lisp array, and the renderer needs no surfaces: `update-texture/from-array` uploads a Lisp array into a texture.
+Surfaces are not supported, and neither are the custom cursors made from them. SDL requires a surface to be freed before the pixel data it borrows, which this library cannot ensure for a Lisp array. The renderer needs no surfaces, since `update-texture/from-array` uploads a Lisp array into a texture.
 
-If you need something SDL2 exposes but this wrapper doesn't, adding it is usually straightforward: follow the pattern in `src/common.lisp` (`define-sdl-function`) and mirror the style used in `src/functions.lisp` and `src/wrappers.lisp`.
+To add an SDL2 function this library lacks, bind it in `src/functions.lisp` with `define-sdl-function` from `src/common.lisp`, and wrap it in `src/wrappers.lisp`.
 
 ## License
 
