@@ -122,8 +122,10 @@ This repo focuses mainly on the pieces most games/tools need immediately:
 * windows + display info
 * renderers + textures
 * events + keyboard/mouse state helpers
-* surfaces/pixel formats (where needed for textures)
+* pixel formats
 * a handful of small utilities (timing, hints, clipboard, etc.)
+
+Surfaces, and the custom cursors made from them, are not supported. SDL requires a surface to be freed before the pixel data it borrows, which this library cannot ensure for a Lisp array, and the renderer needs no surfaces: `update-texture/from-array` uploads a Lisp array into a texture.
 
 If you need something SDL2 exposes but this wrapper doesn't, adding it is usually straightforward: follow the pattern in `src/common.lisp` (`define-sdl-function`) and mirror the style used in `src/functions.lisp` and `src/wrappers.lisp`.
 

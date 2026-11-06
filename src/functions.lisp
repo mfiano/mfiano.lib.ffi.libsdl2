@@ -10,35 +10,6 @@
    :check #'valid-pointer?)
   (pixel-format pixel-format-type))
 
-(define-sdl-function %create-color-cursor ()
-  (:name "SDL_CreateColorCursor"
-   :type (:pointer (:struct cursor))
-   :check #'valid-pointer?)
-  (surface (:pointer (:struct surface)))
-  (hot-x :int)
-  (hot-y :int))
-
-(define-sdl-function %create-rgb-surface-with-format ()
-  (:name "SDL_CreateRGBSurfaceWithFormat"
-   :type (:pointer (:struct surface))
-   :check #'valid-pointer?)
-  (flags :uint32)
-  (width :int)
-  (height :int)
-  (depth :int)
-  (format pixel-format-type))
-
-(define-sdl-function %create-rgb-surface-with-format-from ()
-  (:name "SDL_CreateRGBSurfaceWithFormatFrom"
-   :type (:pointer (:struct surface))
-   :check #'valid-pointer?)
-  (pixels :pointer)
-  (width :int)
-  (height :int)
-  (depth :int)
-  (pitch :int)
-  (format pixel-format-type))
-
 (define-sdl-function %create-renderer ()
   (:name "SDL_CreateRenderer"
    :type (:pointer (:struct renderer))
@@ -56,13 +27,6 @@
   (access texture-access)
   (w :int)
   (h :int))
-
-(define-sdl-function %create-texture-from-surface ()
-  (:name "SDL_CreateTextureFromSurface"
-   :type (:pointer (:struct texture))
-   :check #'valid-pointer?)
-  (renderer (:pointer (:struct renderer)))
-  (surface (:pointer (:struct surface))))
 
 (define-sdl-function %create-window ()
   (:name "SDL_CreateWindow"
@@ -87,17 +51,9 @@
   (:name "SDL_DestroyWindow")
   (window (:pointer (:struct window))))
 
-(define-sdl-function %free-cursor ()
-  (:name "SDL_FreeCursor")
-  (cursor (:pointer (:struct cursor))))
-
 (define-sdl-function %free-format ()
   (:name "SDL_FreeFormat")
   (format (:pointer (:struct pixel-format))))
-
-(define-sdl-function %free-surface ()
-  (:name "SDL_FreeSurface")
-  (surface (:pointer (:struct surface))))
 
 (define-sdl-function %get-base-path ()
   (:name "SDL_GetBasePath"
@@ -561,10 +517,6 @@
 (define-sdl-function %restore-window ()
   (:name "SDL_RestoreWindow")
   (window (:pointer (:struct window))))
-
-(define-sdl-function %set-cursor ()
-  (:name "SDL_SetCursor")
-  (cursor (:pointer (:struct cursor))))
 
 (define-sdl-function %set-hint ()
   (:name "SDL_SetHint"

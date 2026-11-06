@@ -6,14 +6,12 @@
   (:use #:mfiano.lib.base.util)
   (:export
    #:copy-rect
-   #:destroy-cursor
    #:destroy-event
    #:destroy-frect
    #:destroy-gl-context
    #:destroy-pixel-format
    #:destroy-rect
    #:destroy-renderer
-   #:destroy-surface
    #:destroy-texture
    #:destroy-window
    #:disable-relative-mouse-mode
@@ -83,17 +81,13 @@
    #:intersect-rect
    #:intersect-rect-f
    #:lock-texture
-   #:make-cursor/from-surface
    #:make-event
    #:make-frect
    #:make-gl-context
    #:make-pixel-format
    #:make-rect
    #:make-renderer
-   #:make-surface
-   #:make-surface/from-array
    #:make-texture
-   #:make-texture/from-surface
    #:make-window
    #:map-rgb
    #:map-rgba
@@ -125,7 +119,6 @@
    #:render-set-viewport
    #:restore-window
    #:sdl-error
-   #:set-cursor
    #:set-render-draw-blend-mode
    #:set-render-draw-color
    #:set-render-scale-quality

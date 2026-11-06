@@ -756,28 +756,6 @@
   (ref-count :int)
   (next (:pointer (:struct pixel-format))))
 
-;;; surface
-
-(c:defcstruct blit-map)
-
-(c:defcstruct surface
-  (flags :uint32)
-  (format (:pointer (:struct pixel-format)))
-  (w :int)
-  (h :int)
-  (pitch :int)
-  (pixels :pointer)
-  (user-data :pointer)
-  (locked :int)
-  (list-blitmap :pointer)
-  (clip-rect (:struct rect))
-  (map (:pointer (:struct blit-map)))
-  (ref-count :int))
-
-;;; cursor
-
-(c:defcstruct cursor)
-
 ;;; video
 
 (c:defcstruct display-mode

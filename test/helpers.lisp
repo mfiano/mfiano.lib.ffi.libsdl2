@@ -48,11 +48,6 @@
      (unwind-protect (progn ,@body)
        (sdl:destroy-texture ,texture))))
 
-(defmacro with-surface ((surface form) &body body)
-  `(let ((,surface ,form))
-     (unwind-protect (progn ,@body)
-       (sdl:destroy-surface ,surface))))
-
 (defmacro with-event ((event) &body body)
   `(let ((,event (sdl:make-event)))
      (unwind-protect (progn ,@body)

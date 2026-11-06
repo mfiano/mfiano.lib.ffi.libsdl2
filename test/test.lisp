@@ -320,14 +320,6 @@
     (is (eq (sdl:get-scancode-from-key :a) :a))
     (is (eq (sdl:get-scancode-from-key :escape) :escape))))
 
-(test mouse.cursor
-  (with-window (window)
-    (with-surface (surface (sdl:make-surface 4 4))
-      (let ((cursor (sdl:make-cursor/from-surface surface)))
-        (is (c:pointerp cursor))
-        (is (null (multiple-value-list (sdl:set-cursor cursor))))
-        (is (null (multiple-value-list (sdl:destroy-cursor cursor))))))))
-
 (test mouse.cursor.visibility
   (with-window (window)
     (sdl:hide-cursor)
@@ -524,25 +516,6 @@
         (sdl:unlock-texture texture)
         (sdl:render-copy renderer texture)
         (is (equalp (read-pixels renderer 4 2) pixels))))))
-
-(test texture.from-surface
-  (with-renderer (window renderer :width 4 :height 2)
-    (let ((pixels (make-pixels 4 2)))
-      (with-surface (surface (sdl:make-surface/from-array 4 2 pixels))
-        (let ((texture (sdl:make-texture/from-surface renderer surface)))
-          (unwind-protect
-               (progn
-                 (sdl:render-copy renderer texture)
-                 (is (equalp (read-pixels renderer 4 2) pixels)))
-            (sdl:destroy-texture texture)))))))
-
-(test texture.surface
-  (with-renderer (window renderer)
-    (with-surface (surface (sdl:make-surface 3 2))
-      (let ((texture (sdl:make-texture/from-surface renderer surface)))
-        (unwind-protect
-             (is (equal (nthcdr 2 (multiple-value-list (sdl:query-texture texture))) '(3 2)))
-          (sdl:destroy-texture texture))))))
 
 (test render.copy
   (with-renderer (window renderer)

@@ -5,11 +5,6 @@
   (c:with-foreign-slots ((width height x y) rect (:struct rect))
     (make-object 'rect 'width width 'height height 'x x 'y y)))
 
-(defun destroy-cursor (cursor)
-  (assert (valid-pointer? cursor))
-  (%free-cursor cursor)
-  (values))
-
 (defun destroy-event (event)
   (assert (valid-pointer? event))
   (c:foreign-free event)
@@ -38,11 +33,6 @@
 (defun destroy-renderer (renderer)
   (assert (valid-pointer? renderer))
   (%destroy-renderer renderer)
-  (values))
-
-(defun destroy-surface (surface)
-  (assert (valid-pointer? surface))
-  (%free-surface surface)
   (values))
 
 (defun destroy-texture (texture)
@@ -427,12 +417,6 @@
       (values (c:mem-ref pixels :pointer)
               (c:mem-ref pitch :int)))))
 
-(defun make-cursor/from-surface (surface &key (hot-x 0) (hot-y 0))
-  (assert (valid-pointer? surface))
-  (check-type hot-x i32!-)
-  (check-type hot-y i32!-)
-  (%create-color-cursor surface hot-x hot-y))
-
 (defun make-event ()
   (make-object 'event 'type :first-event))
 
@@ -465,28 +449,11 @@
   (let ((flags (or flags '(:accelerated :present-vsync :target-texture))))
     (%create-renderer window index flags)))
 
-(defun make-surface (width height)
-  (check-type width i32+)
-  (check-type height i32+)
-  (%create-rgb-surface-with-format 0 width height 32 :rgba8888))
-
-(defun make-surface/from-array (width height data)
-  (check-type width i32+)
-  (check-type height i32+)
-  (check-type data (u32-array (*)))
-  (c:with-pointer-to-vector-data (pixels data)
-    (%create-rgb-surface-with-format-from pixels width height 32 (* width 4) :rgba8888)))
-
 (defun make-texture (renderer width height &key (access :target))
   (assert (valid-pointer? renderer))
   (check-type width i32+)
   (check-type height i32+)
   (%create-texture renderer :rgba8888 access width height))
-
-(defun make-texture/from-surface (renderer surface)
-  (assert (valid-pointer? renderer))
-  (assert (valid-pointer? surface))
-  (%create-texture-from-surface renderer surface))
 
 (defun make-window (width height &key (x :undefined) (y :undefined) (title "") flags)
   (check-type width u16)
@@ -737,11 +704,6 @@
 (defun restore-window (window)
   (assert (valid-pointer? window))
   (%restore-window window)
-  (values))
-
-(defun set-cursor (cursor)
-  (assert (valid-pointer? cursor))
-  (%set-cursor cursor)
   (values))
 
 (defun set-render-draw-blend-mode (renderer blend-mode)
