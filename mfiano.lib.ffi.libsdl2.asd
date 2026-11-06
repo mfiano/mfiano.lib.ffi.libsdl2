@@ -7,6 +7,7 @@
   :depends-on
   (#:mfiano.lib.base
    #:cffi
+   #:static-vectors
    #:trivial-features)
   :in-order-to ((test-op (test-op #:mfiano.lib.ffi.libsdl2/test)))
   :pathname "src"
@@ -27,7 +28,8 @@
   :depends-on
   (#:1am
    #:cffi
-   #:mfiano.lib.ffi.libsdl2)
+   #:mfiano.lib.ffi.libsdl2
+   #:static-vectors)
   :perform (test-op (o c) (symbol-call '#:1am '#:run))
   :pathname "test"
   :serial t

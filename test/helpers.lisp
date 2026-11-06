@@ -3,7 +3,8 @@
 (define-package #:mfiano.lib.ffi.libsdl2/test
   (:local-nicknames
    (#:c #:cffi)
-   (#:sdl #:mfiano.lib.ffi.libsdl2))
+   (#:sdl #:mfiano.lib.ffi.libsdl2)
+   (#:sv #:static-vectors))
   (:use #:mfiano.lib.base.util #:1am))
 
 (in-package #:mfiano.lib.ffi.libsdl2/test)
@@ -78,8 +79,10 @@
 (defun read-pixels (renderer width height)
   (let ((pixels (make-u32-array (* width height))))
     (sdl:with-rect (rect :width width :height height)
-      (c:with-pointer-to-vector-data (pointer pixels)
-        (assert (zerop (%render-read-pixels renderer rect :rgba8888 pointer (* width 4))))))
+      (sv:with-static-vector (buffer (length pixels) :element-type 'u32 :initial-element 0)
+        (assert (zerop (%render-read-pixels renderer rect :rgba8888
+                                            (sv:static-vector-pointer buffer) (* width 4))))
+        (replace pixels buffer)))
     pixels))
 
 (defun every-pixel? (pixels value)
