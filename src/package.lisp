@@ -46,7 +46,6 @@
    #:get-render-target
    #:get-renderer
    #:get-renderer-info
-   #:get-max-texture-size
    #:get-renderer-output-size
    #:get-rgb
    #:get-rgba
