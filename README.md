@@ -49,7 +49,7 @@ This is deliberately "SDL-shaped" code.
 
 (defun run ()
   (init :video :events)
-  (let ((window (make-window "SDL2 demo" 800 450 :title "My Demo"))
+  (let ((window (make-window 800 450 :title "My Demo"))
         (renderer nil)
         (event (make-event)))
     (unwind-protect
