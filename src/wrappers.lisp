@@ -115,7 +115,7 @@
       (foreign-slot-values mode '(:struct display-mode)))))
 
 (defun get-display-name (display-index)
-  (check-type display-index i32+)
+  (check-type display-index i32!-)
   (%get-display-name display-index))
 
 (defun get-event-type (event)
@@ -429,16 +429,16 @@
 
 (defun make-cursor/from-surface (surface &key (hot-x 0) (hot-y 0))
   (assert (valid-pointer? surface))
-  (check-type hot-x i32+)
-  (check-type hot-y i32+)
+  (check-type hot-x i32!-)
+  (check-type hot-y i32!-)
   (%create-color-cursor surface hot-x hot-y))
 
 (defun make-event ()
   (make-object 'event 'type :first-event))
 
 (defun make-frect (width height &key (x 0f0) (y 0f0))
-  (check-type width (or i32+ f32+))
-  (check-type height (or i32+ f32+))
+  (check-type width (or i32!- f32!-))
+  (check-type height (or i32!- f32!-))
   (check-type x (or i32 f32))
   (check-type y (or i32 f32))
   (make-object 'frect 'width (f32 width) 'height (f32 height) 'x (f32 x) 'y (f32 y)))
@@ -452,8 +452,8 @@
   (%alloc-format type))
 
 (defun make-rect (width height &key (x 0) (y 0))
-  (check-type width (or i32+ f32+))
-  (check-type height (or i32+ f32+))
+  (check-type width (or i32!- f32!-))
+  (check-type height (or i32!- f32!-))
   (check-type x (or i32 f32))
   (check-type y (or i32 f32))
   (make-object 'rect 'width (floor width) 'height (floor height) 'x (floor x) 'y (floor y)))
@@ -565,7 +565,7 @@
   (c:foreign-slot-value rect '(:struct rect) 'height))
 
 (defun (setf rect-height) (value rect)
-  (check-type value u32)
+  (check-type value i32!-)
   (assert (valid-pointer? rect))
   (setf (c:foreign-slot-value rect '(:struct rect) 'height) value))
 
@@ -574,7 +574,7 @@
   (c:foreign-slot-value rect '(:struct rect) 'width))
 
 (defun (setf rect-width) (value rect)
-  (check-type value u32)
+  (check-type value i32!-)
   (assert (valid-pointer? rect))
   (setf (c:foreign-slot-value rect '(:struct rect) 'width) value))
 
@@ -583,7 +583,7 @@
   (c:foreign-slot-value rect '(:struct rect) 'x))
 
 (defun (setf rect-x) (value rect)
-  (check-type value u32)
+  (check-type value i32)
   (assert (valid-pointer? rect))
   (setf (c:foreign-slot-value rect '(:struct rect) 'x) value))
 
@@ -592,7 +592,7 @@
   (c:foreign-slot-value rect '(:struct rect) 'y))
 
 (defun (setf rect-y) (value rect)
-  (check-type value u32)
+  (check-type value i32)
   (assert (valid-pointer? rect))
   (setf (c:foreign-slot-value rect '(:struct rect) 'y) value))
 
