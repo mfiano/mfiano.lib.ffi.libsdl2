@@ -504,6 +504,13 @@
         (sdl:render-copy renderer texture)
         (is (equalp (read-pixels renderer 2 2) (region pixels 4 1 2 2 2)))))))
 
+(test texture.update-from-array.negative-offset
+  (with-renderer (window renderer :width 2 :height 2)
+    (with-texture (texture renderer 2 2 :access :static)
+      (let ((pixels (make-pixels 4 4)))
+        (signals type-error (sdl:update-texture/from-array texture 4 4 pixels :x -1))
+        (signals type-error (sdl:update-texture/from-array texture 4 4 pixels :y -1))))))
+
 (test texture.lock
   (with-renderer (window renderer :width 4 :height 2)
     (with-texture (texture renderer 4 2 :access :streaming)
