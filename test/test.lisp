@@ -266,6 +266,15 @@
       (push-event (fill-event event 'sdl::quit-event 'type :quit))
       (is (poll-event-of-type event :quit)))))
 
+(test event.type.width
+  (with-video ()
+    (with-event (event)
+      (drain-events event)
+      (scribble-event event)
+      (setf (c:foreign-slot-value event '(:struct sdl::quit-event) 'type) :quit)
+      (push-event event)
+      (is (poll-event-of-type event :quit)))))
+
 (test event.keyboard
   (with-window (window)
     (with-event (event)

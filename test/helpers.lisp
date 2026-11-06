@@ -106,6 +106,10 @@
       (setf (c:foreign-slot-value event struct slot) value))
     event))
 
+(defun scribble-event (event)
+  (dotimes (i (c:foreign-type-size '(:struct sdl::event)) event)
+    (setf (c:mem-aref event :uint8 i) #xff)))
+
 (defun push-event (event)
   (assert (= (%push-event event) 1)))
 

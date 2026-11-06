@@ -953,7 +953,7 @@
   (:disable 0)
   (:enable 1))
 
-(c:defcenum (event-type :uint16)
+(c:defcenum (event-type :uint32)
   (:first-event #x0000)
   (:quit #x0100)
   :app-terminating
