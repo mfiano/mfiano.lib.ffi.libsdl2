@@ -890,7 +890,8 @@
 (c:defcenum (renderer-flip :uint32)
   (:none #x00000000)
   (:horizontal #x00000001)
-  (:vertical #x00000002))
+  (:vertical #x00000002)
+  (:horizontal-and-vertical #x00000003))
 
 (c:defcstruct renderer)
 

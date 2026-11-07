@@ -575,6 +575,17 @@
   (assert (valid-pointer? renderer))
   (%render-is-clip-enabled renderer))
 
+(defun axis-flip (flip-x flip-y)
+  (cond
+    ((and flip-x flip-y)
+     :horizontal-and-vertical)
+    (flip-x
+     :horizontal)
+    (flip-y
+     :vertical)
+    (t
+     :none)))
+
 (defun render-copy (renderer texture
                     &key
                       source-rect
@@ -582,7 +593,8 @@
                       (angle 0d0)
                       (center-x nil)
                       (center-y nil)
-                      (flip :none))
+                      flip-x
+                      flip-y)
   (assert (valid-pointer? renderer))
   (assert (valid-pointer? texture))
   (check-type source-rect (or object null))
@@ -590,7 +602,6 @@
   (check-type angle real)
   (check-type center-x (or i32 null))
   (check-type center-y (or i32 null))
-  (check-type flip #.(member-keys 'renderer-flip))
   (let* ((source-rect (or source-rect (c:null-pointer)))
          (dest-rect (or dest-rect (c:null-pointer)))
          (angle (f64 angle))
@@ -598,7 +609,13 @@
          (center (if center?
                      (make-object 'point 'x center-x 'y center-y)
                      (cffi:null-pointer))))
-    (unwind-protect (%render-copy-ex renderer texture source-rect dest-rect angle center flip)
+    (unwind-protect (%render-copy-ex renderer
+                                     texture
+                                     source-rect
+                                     dest-rect
+                                     angle
+                                     center
+                                     (axis-flip flip-x flip-y))
       (when center?
         (free-object center)))
     (values)))
@@ -610,7 +627,8 @@
                         (angle 0d0)
                         (center-x nil)
                         (center-y nil)
-                        (flip :none))
+                        flip-x
+                        flip-y)
   (assert (valid-pointer? renderer))
   (assert (valid-pointer? texture))
   (check-type source-rect (or object null))
@@ -618,7 +636,6 @@
   (check-type angle real)
   (check-type center-x (or real null))
   (check-type center-y (or real null))
-  (check-type flip #.(member-keys 'renderer-flip))
   (let* ((source-rect (or source-rect (c:null-pointer)))
          (dest-rect (or dest-rect (c:null-pointer)))
          (angle (f64 angle))
@@ -626,7 +643,13 @@
          (center (if center?
                      (make-object 'fpoint 'x (f32 center-x) 'y (f32 center-y))
                      (cffi:null-pointer))))
-    (unwind-protect (%render-copy-ex-f renderer texture source-rect dest-rect angle center flip)
+    (unwind-protect (%render-copy-ex-f renderer
+                                       texture
+                                       source-rect
+                                       dest-rect
+                                       angle
+                                       center
+                                       (axis-flip flip-x flip-y))
       (when center?
         (free-object center)))
     (values)))

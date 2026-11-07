@@ -72,6 +72,7 @@ This opens a window and clears it every frame until the window is closed.
   - `(init :video :events)`
   - `(make-window ... :flags '(:shown :resizable))`
   - `(make-renderer window :flags '(:accelerated :present-vsync))`
+- `render-copy` and `render-copy-f` flip with the generalized booleans `:flip-x` and `:flip-y`, so `(render-copy renderer texture :flip-x t)` mirrors the texture horizontally.
 - The exported wrappers are the public API. The bindings are generated with the `define-sdl-function` macro, and their `%`-prefixed names stay internal.
 - Each wrapper is named after the SDL2 function it calls, in Lisp style: `SDL_RenderClear` is `render-clear` and `SDL_PollEvent` is `poll-event`. Constructors are `make-*` and destructors are `destroy-*`.
 

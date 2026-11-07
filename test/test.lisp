@@ -546,13 +546,29 @@
           (sdl:render-copy renderer texture :source-rect rect))
         (is (equalp (read-pixels renderer 2 1) (region pixels 4 1 1 2 1)))))))
 
-(test render.copy.flip
+(test render.copy.flip-x
   (with-renderer (window renderer :width 4 :height 2)
     (with-texture (texture renderer 4 2 :access :static)
       (let ((pixels (make-pixels 4 2)))
         (sdl:update-texture/from-array texture 4 2 pixels)
-        (sdl:render-copy renderer texture :flip :horizontal)
+        (sdl:render-copy renderer texture :flip-x t)
         (is (equalp (read-pixels renderer 4 2) (mirror pixels 4 2)))))))
+
+(test render.copy.flip-y
+  (with-renderer (window renderer :width 4 :height 2)
+    (with-texture (texture renderer 4 2 :access :static)
+      (let ((pixels (make-pixels 4 2)))
+        (sdl:update-texture/from-array texture 4 2 pixels)
+        (sdl:render-copy renderer texture :flip-y t)
+        (is (equalp (read-pixels renderer 4 2) (flip-rows pixels 4 2)))))))
+
+(test render.copy.flip-x-y
+  (with-renderer (window renderer :width 4 :height 2)
+    (with-texture (texture renderer 4 2 :access :static)
+      (let ((pixels (make-pixels 4 2)))
+        (sdl:update-texture/from-array texture 4 2 pixels)
+        (sdl:render-copy renderer texture :flip-x t :flip-y t)
+        (is (equalp (read-pixels renderer 4 2) (rotate-half-turn pixels)))))))
 
 (test render.copy-f
   (with-renderer (window renderer)

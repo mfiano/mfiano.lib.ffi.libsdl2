@@ -76,12 +76,27 @@
         (setf (aref result (+ (* row width) column))
               (aref pixels (+ (* row width) (- width column 1))))))))
 
+(defun flip-rows (pixels width height)
+  (let ((result (make-u32-array (* width height))))
+    (dotimes (row height result)
+      (replace result
+               pixels
+               :start1 (* row width)
+               :start2 (* (- height row 1) width)
+               :end2 (* (- height row) width)))))
+
+(defun rotate-half-turn (pixels)
+  (reverse pixels))
+
 (defun read-pixels (renderer width height)
   (let ((pixels (make-u32-array (* width height))))
     (sdl:with-rect (rect :width width :height height)
       (sv:with-static-vector (buffer (length pixels) :element-type 'u32 :initial-element 0)
-        (assert (zerop (%render-read-pixels renderer rect :rgba8888
-                                            (sv:static-vector-pointer buffer) (* width 4))))
+        (assert (zerop (%render-read-pixels renderer
+                                            rect
+                                            :rgba8888
+                                            (sv:static-vector-pointer buffer)
+                                            (* width 4))))
         (replace pixels buffer)))
     pixels))
 
